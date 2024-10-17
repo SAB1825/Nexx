@@ -1,10 +1,19 @@
-import { Button } from "@/components/ui/button";
 
-export default function Home() {
+import { getCurrent } from "@/features/auth/actions";
+import { UserButton } from "@/features/auth/components/UserButton";
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  const user = await getCurrent();
+  console.log({user})
+  if(!user) {
+    
+    redirect("/sign-in")
+  }
+
   return (
-    <div>
-      <Button variant="link">Click here</Button> 
-      <p className="text-center text-red-700">Hello world</p>
+    <div className="bg-black h-screen w-screen">
+      <UserButton />
     </div>
   );
 }

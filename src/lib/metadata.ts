@@ -38,12 +38,7 @@ export const generateMetadata = ({
         description,
         ...(image && { images: [{ url: image }] }),
     },
-    twitter: {
-        title,
-        description,
-        ...(image && { card: "summary_large_image", images: [image] }),
-        creator: "@sabari",
-    },
+    
     // metadataBase: new URL(process.env.APP_DOMAIN!),
     ...(noIndex && { robots: { index: false, follow: false } }),
 });
