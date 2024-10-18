@@ -1,7 +1,7 @@
 import "./globals.css";
 import { generateMetadata } from "@/lib/metadata";
 import { QueryProvider  } from "@/components/query-provider";
-
+import { Toaster } from "@/components/ui/sonner";
 export const metadata = generateMetadata();
 
 export default function RootLayout({
@@ -14,6 +14,8 @@ export default function RootLayout({
       <body
       >
         <QueryProvider>
+        <Toaster />
+
         {children}
         </QueryProvider>
       </body>

@@ -3,6 +3,7 @@
 import { cookies } from "next/headers"
 import { Account, Client } from "node-appwrite"
 import { AUTH_COOKIE } from "./constant"
+import { useRouter } from "next/navigation"
 
 export const getCurrent = async () => {
     try {

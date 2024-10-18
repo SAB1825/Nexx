@@ -6,7 +6,7 @@ import React from 'react'
 const SignUpPage = async () => {
   const user = await getCurrent();
   if(user !== null) {
-    redirect('/')
+    redirect('/dashboard')
   }
   return (
     <SignUp />
