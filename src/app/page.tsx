@@ -1,33 +1,16 @@
 
-import { Button } from "@/components/ui/button";
-import { getCurrent } from "@/features/auth/actions";
-import { UserButton } from "@/features/auth/components/UserButton";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import DashboardSection from "@/components/LandingPage/dashboard-section";
+import HeroSection from "@/components/LandingPage/hero-section";
+import {LandingNavbar} from "@/components/LandingPage/landing-navbar";
 
-export default async function Home() {
-  
-  const user = await getCurrent();
-  console.log({user})
+export default  function Home() {
   
 
   return (
-    <div className="bg-black h-screen w-screen">
-      <UserButton />
-      {
-        user ? 
-        <Link href="/dashboard">
-          <Button>
-            Dashboard
-          </Button>
-        </Link>
-          :
-        <Link href="/sign-in">
-          <Button>
-            Sign In
-          </Button>
-          </Link>
-      }
+    <div className="bg-black  w-screen">
+      <LandingNavbar />
+      <HeroSection />
+      <DashboardSection />
     </div>
-  );
+  )
 }

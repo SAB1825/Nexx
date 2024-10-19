@@ -6,13 +6,19 @@ export const useCurrent = () => {
     const query = useQuery({
         queryKey: ["current"],
         queryFn: async () => {
-            const response = await client.api.auth.current.$get();
-            if(!response.ok) {
+            try {
+                const response = await client.api.auth.current.$get();
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const { data } = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Error fetching current user:", error);
                 return null;
             }
-            const { data } = await response.json();
-            return data;
-        }
+        },
+        retry: false, // Disable retries for authentication errors
     });
     return query;
 };
