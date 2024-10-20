@@ -54,6 +54,10 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
     }
     mutate({
         form: finalValues
+    },{
+      onSuccess: () => {
+        form.reset()
+      }
     })
 
    
@@ -117,9 +121,9 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                       </div>
                     ): (
                       <div>
-                        <Avatar className = "size-[74px]">
-                          <AvatarFallback className="bg-gray-800 border border-gray-700">
-                            <ImageIcon className="size-[30px] text-white"/>
+                        <Avatar className = "size-[74px] rounded-md">
+                          <AvatarFallback className="bg-gray-800 border border-gray-700 rounded-md">
+                            <ImageIcon className="size-[30px] text-white rounded-md"/>
                           </AvatarFallback>
 
                         </Avatar>

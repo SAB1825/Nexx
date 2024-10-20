@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Navigation } from "./navigations"
+import { WorkspaceSwitcher } from "./Workspace-switcher"
 
 
 export const Sidebar = () => {
@@ -17,6 +18,8 @@ export const Sidebar = () => {
                 exx
             </span>
            </Link> 
+           <hr className="my-6 border-zinc-700"/>
+           <WorkspaceSwitcher />
            <hr className="my-6 border-zinc-700"/>
            <Navigation />
         </aside>

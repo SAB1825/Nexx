@@ -1,9 +1,9 @@
-import { forwardRef, ReactElement } from "react";
+import { forwardRef, ReactElement, ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 
 type MainButtonProps = {
-  text: string;
+  text: string | ReactNode;
   form?: string;
   isLoading?: boolean;
   action?: () => void;

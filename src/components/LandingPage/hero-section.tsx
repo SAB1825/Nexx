@@ -5,6 +5,7 @@ import Link from "next/link";
 import HeroHeaderSection from "./Hero-Header";
 import MainButton from "../global/MainButton";
 import { BackgroundBeams } from "../ui/background-beams";
+import { ZapIcon } from "lucide-react";
 
 function HeroSection() {
   return (
@@ -26,23 +27,23 @@ function HeroSection() {
         </p>
 
         <div className="flex gap-[12px] justify-center">
-          <Link href="/sign-up">
+          <Link href="/sign-in">
             <MainButton
-              text="Start Free Trial"
+              text="Go to console"
               size="small"
               className="border-none rounded-[12px]"
             />
           </Link>
-          <Link href="/product-tour">
+          <Link href="/sign-up">
             <MainButton
-              text="Take a Tour"
+              text={<p className="flex text-black group-hover:text-orange-500">Get Started!<ZapIcon className="size-3.5 ml-1.5 text-orange-500 fill-orange-500 group-hover:text-white" /></p>}
               size="small"
               className="rounded-[12px] border-[1px] border-[#EDEEF0] bg-white hover:bg-white text-[#31373D]"
             />
           </Link>
         </div>
       </div>
-      <BackgroundBeams />
+     
     </section>
   );
 }

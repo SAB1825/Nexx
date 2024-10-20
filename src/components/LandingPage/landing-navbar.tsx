@@ -17,8 +17,8 @@ export const  LandingNavbar = () => {
             </div>
           </div>
           <div className="hidden sm:flex sm:items-center">
-            <Button variant="ghost" className="text-white hover:text-gray-900 ">Sign In</Button>
-            <Button className="ml-4 bg-white text-black group-hover:bg-orange-500 hover:text-white">Get Started                                    <ZapIcon className="size-3.5 ml-1.5 text-orange-500 fill-orange-500 hover:text-white" />
+            <Button variant="ghost" className="text-white hover:text-gray-900 cursor-pointer ">Sign In</Button>
+            <Button className="ml-4 bg-white text-black group-hover:bg-orange-500 hover:text-white">Get Started                                    
             </Button>
           </div>
           <div className="flex items-center sm:hidden">
