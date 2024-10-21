@@ -1,11 +1,12 @@
 "use client";
 import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
-import { WorkspaceSchema } from "../schemas";
+import { UpdateWorkspaceSchema } from "../schemas";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
+  initialValues: Workspace;
 }
 import {
   Card,
@@ -37,19 +38,21 @@ import { ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTimeout } from "react-use";
 import { cn } from "@/lib/utils";
+import { Workspace } from "../types";
 
-export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+export const CreateWorkspaceForm = ({ onCancel, initialValues }: CreateWorkspaceFormProps) => {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate, isPending } = useCreateWorkspace()
-  const form = useForm<z.infer<typeof WorkspaceSchema>>({
-    resolver: zodResolver(WorkspaceSchema),
+  const form = useForm<z.infer<typeof UpdateWorkspaceSchema>>({
+    resolver: zodResolver(UpdateWorkspaceSchema),
     defaultValues: {
-      name: "",
+      ...initialValues,
+      image: initialValues.imageUrl ?? ""
     },
   });
 
-  const onSubmit = (data: z.infer<typeof WorkspaceSchema>) => {
+  const onSubmit = (data: z.infer<typeof UpdateWorkspaceSchema>) => {
     console.log(data);
 
     const finalValues = {
@@ -57,7 +60,8 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       image: data.image instanceof File ? data.image : undefined
     }
     mutate({
-        form: finalValues
+        form: finalValues,
+        param: { workspaceId: initialValues.$id }
     },{
       onSuccess: ({data}) => {
         form.reset();
@@ -77,7 +81,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
     <Card className="w-full border-none max-w-md mx-auto rounded-lg shadow-lg bg-black">
       <CardHeader className="p-8 border-b border-gray-700">
         <CardTitle className="text-2xl font-bold text-white">
-          Create a new workspace
+          {initialValues.name}
         </CardTitle>
         <CardDescription className="text-gray-400 mt-2">
           Enter the details for your new workspace below.

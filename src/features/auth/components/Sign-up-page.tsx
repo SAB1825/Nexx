@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { signUpSchema } from '@/features/auth/schema'
 import { useRegister } from '@/features/auth/api/use-register'
+import { redirect } from 'next/navigation'
 
 // Define the schema for form validation
 
@@ -38,6 +39,7 @@ export default function SignUp() {
       signUpSchema.parse(formData)
       console.log('Sign Up Submitted:', formData)
       mutate({ json: formData })
+      redirect('/workspaces/create');
     } catch (error) {
       if (error instanceof z.ZodError) {
         setErrors(error.flatten().fieldErrors as Partial<SignUpFormData>)
