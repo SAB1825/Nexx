@@ -42,6 +42,7 @@ const app = new Hono()
                 )
 
                 const arrayBuffer = await storage.getFilePreview(
+                
                     IMAGES_BUCKET_ID,
                     uploadedImage.$id
                 )

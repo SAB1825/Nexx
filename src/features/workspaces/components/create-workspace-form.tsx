@@ -34,8 +34,11 @@ import {
 } from "@/components/ui/avatar";
 import Image from "next/image";
 import { ImageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTimeout } from "react-use";
 
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+  const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate, isPending } = useCreateWorkspace()
   const form = useForm<z.infer<typeof WorkspaceSchema>>({
@@ -55,14 +58,11 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
     mutate({
         form: finalValues
     },{
-      onSuccess: () => {
-        form.reset()
+      onSuccess: ({data}) => {
+        form.reset();
+          router.push(`/dashboard/workspaces/${data.$id}`)
       }
     })
-
-   
-    
-
    };
    
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +73,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   }
 
   return (
-    <Card className="w-full border-none max-w-md mx-auto rounded-lg shadow-lg bg-gradient-to-br from-gray-900 to-gray-800">
+    <Card className="w-full border-none max-w-md mx-auto rounded-lg shadow-lg bg-black">
       <CardHeader className="p-8 border-b border-gray-700">
         <CardTitle className="text-2xl font-bold text-white">
           Create a new workspace

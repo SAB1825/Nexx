@@ -12,17 +12,27 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { WorkspaceAvatar } from "@/features/workspaces/components/workspace-avatar"
+import { useRouter } from "next/navigation"
+import { useWorkspaceId } from "@/features/workspaces/hooks/useWorkspaceId"
+import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal"
 
 export const WorkspaceSwitcher = () => {
+  const workspaceId = useWorkspaceId();
+  const router = useRouter();
   const { data: workspaces } = useGetWorkspaces()
-
+  const {open, close} = useCreateWorkspaceModal()
+  const onSelect = (id : string) => {
+    router.push(`/dashboard/workspaces/${id}`)
+  }
   return (
     <div className="flex flex-col gap-y-4 bg-zinc-950 p-4 rounded-lg shadow-lg">
       <div className="flex items-center justify-between">
         <span className="text-zinc-100 text-sm font-medium">Workspaces</span>
-        <RiAddCircleFill className="w-5 h-5 text-zinc-400 hover:text-zinc-200 transition-colors duration-200 cursor-pointer" />
+        <RiAddCircleFill
+          onClick={open}
+         className="w-5 h-5 text-zinc-400 hover:text-zinc-200 transition-colors duration-200 cursor-pointer" />
       </div>
-      <Select>
+      <Select onValueChange={onSelect} value={workspaceId}>
         <SelectTrigger className="w-full bg-zinc-900 text-zinc-100 border-zinc-800 h-15 hover:bg-zinc-800 focus:ring-1 focus:ring-zinc-700 transition-all duration-200 rounded-md">
           <SelectValue placeholder="Select a workspace" />
         </SelectTrigger>

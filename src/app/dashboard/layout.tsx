@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/Navigations/Navbar'
 import { Sidebar } from '@/components/Navigations/Sidebar'
+import { CreateWorkspaceModal } from '@/features/workspaces/components/create-workspace-modal'
 import React from 'react'
 
 interface LayoutProps {
@@ -9,6 +10,7 @@ interface LayoutProps {
 export default function DashboardLayout({ children }: LayoutProps) {
   return (
     <div className='bg-zinc-900 min-h-screen'>
+      <CreateWorkspaceModal />
       <div className='flex w-full h-full'>
       <div className="fixed left-0 top-0 hidden lg:block lg:w-[264px] h-full overflow-y-auto">
         <Sidebar />
