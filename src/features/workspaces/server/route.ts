@@ -76,7 +76,7 @@ const app = new Hono()
             const database = c.get("database");
             const storage = c.get("storage");
             const user = c.get("user");
-            const { workspaceId} = c.req.param();
+            const { workspaceId } = c.req.param();
             const { name, image } = c.req.valid("form");
             const member = await getMember({
                 database, 
@@ -109,6 +109,27 @@ const app = new Hono()
                 imageUrl: UploadedImageUrl
             })
             return c.json({ data: workspace })
+        }
+    )
+    .delete(
+        "/:workspaceId",
+        sessionMiddleware,
+        async (c) => {
+            const database = c.get("database");
+            const user = c.get("user");
+
+            const { workspaceId } = c.req.param();
+            const member = await getMember({
+                database,
+                workspaceId,
+                userId: user.$id
+            })
+            if(!member || member.role !== MemberRole.ADMIN) {
+                return c.json({ error: "You are not authorized to delete this workspace"}, 401)
+            }
+
+            await database.deleteDocument(DATABASE_ID, WORKSPACE_ID, workspaceId)
+            return c.json({ data: { $id: workspaceId }})
         }
     )
 export default app;

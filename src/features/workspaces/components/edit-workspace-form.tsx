@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { UpdateWorkspaceSchema } from "../schemas";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-interface CreateWorkspaceFormProps {
+interface EditWorkspaceForm {
   onCancel?: () => void;
   initialValues: Workspace;
 }
@@ -27,28 +27,36 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useCreateWorkspace } from "../api/use-create-workspace";
 import { 
   Avatar,
   AvatarFallback,
 
 } from "@/components/ui/avatar";
 import Image from "next/image";
-import { ImageIcon } from "lucide-react";
+import { ArrowLeftIcon, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTimeout } from "react-use";
 import { cn } from "@/lib/utils";
 import { Workspace } from "../types";
+import { useUpdateWorkspace } from "../api/use-update-workspace";
+import { useConfirm } from "@/hooks/use-confirm";
+import { useDeleteWorkspace } from "../api/use-delete-workspace";
 
-export const CreateWorkspaceForm = ({ onCancel, initialValues }: CreateWorkspaceFormProps) => {
+export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm) => {
   const router = useRouter()
+  const [ConfirmDialog, confirm] = useConfirm(
+    "Delete Workspace",
+    "Are you sure you want to delete this workspace?",
+    "destructive"
+  )
+  
   const inputRef = useRef<HTMLInputElement>(null);
-  const { mutate, isPending } = useCreateWorkspace()
+  const { mutate, isPending } = useUpdateWorkspace()
+  const { mutate: deleteWorkspace, isPending: isDeleting } = useDeleteWorkspace()
   const form = useForm<z.infer<typeof UpdateWorkspaceSchema>>({
     resolver: zodResolver(UpdateWorkspaceSchema),
     defaultValues: {
       ...initialValues,
-      image: initialValues.imageUrl ?? ""
+      image: initialValues.imageUrl ?? "",
     },
   });
 
@@ -57,7 +65,7 @@ export const CreateWorkspaceForm = ({ onCancel, initialValues }: CreateWorkspace
 
     const finalValues = {
       ...data,
-      image: data.image instanceof File ? data.image : undefined
+      image: data.image instanceof File ? data.image : ""
     }
     mutate({
         form: finalValues,
@@ -65,7 +73,7 @@ export const CreateWorkspaceForm = ({ onCancel, initialValues }: CreateWorkspace
     },{
       onSuccess: ({data}) => {
         form.reset();
-          router.push(`/dashboard/workspaces/${data.$id}`)
+          router.push(`/workspaces/${data.$id}`)
       }
     })
    };
@@ -77,102 +85,163 @@ export const CreateWorkspaceForm = ({ onCancel, initialValues }: CreateWorkspace
     }
   }
 
+  const handleDelete = async () => {
+    const ok = await confirm()
+    if(!ok) {
+      return
+    }
+    deleteWorkspace({
+      param: { workspaceId: initialValues.$id }
+    },{
+      onSuccess: () => {
+        window.location.href = "/"
+      }
+    })
+  }
+
   return (
-    <Card className="w-full border-none max-w-md mx-auto rounded-lg shadow-lg bg-black">
-      <CardHeader className="p-8 border-b border-gray-700">
-        <CardTitle className="text-2xl font-bold text-white">
-          {initialValues.name}
-        </CardTitle>
-        <CardDescription className="text-gray-400 mt-2">
-          Enter the details for your new workspace below.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-8">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Workspace Name</FormLabel>
-                  <FormControl>
-                    <Input 
-                      {...field}
-                      placeholder="Enter workspace name"
-                      className="bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control = {form.control}
-              name = "image"
-              render = {({field}) => (
-                <div className = "flex flex-col gap-2">
-                  <div className="flex items-center gap-x-5">
-                    {field.value ? (
-                      <div className = "relative size-[74px] rounded-md overflow-hidden">
-                        <Image 
-                          src={
-                            field.value instanceof File ? URL.createObjectURL(field.value) : field.value
-                          }
-                          alt="Workspace Image"
-                          fill
-                          className="rounded-full object-cover"
-                        />
-                      </div>
-                    ): (
-                      <div>
-                        <Avatar className = "size-[74px] rounded-md">
-                          <AvatarFallback className="bg-gray-800 border border-gray-700 rounded-md">
-                            <ImageIcon className="size-[30px] text-white rounded-md"/>
-                          </AvatarFallback>
-
-                        </Avatar>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-white text-xl font-medium">Workspace Icon</p>
-                      <p className="text-gray-400 text-xs">Maximum file: size 2 MB</p>
-                      <p className="text-gray-400 text-xs">Supported Formats: PNG, JPG, SVG, JPEF</p>
-                      <input 
-                        className="hidden"
-                        type="file"
-                        accept=".png, .jpg, .svg, .jpeg"
-                        ref={inputRef}
-                        disabled={isPending}
-                        onChange={handleImageChange}
+    <div className="flex flex-col gap-y-6 max-w-md mx-auto">
+      <ConfirmDialog />
+      <Card className="border-none rounded-xl shadow-2xl bg-gradient-to-br from-zinc-900 to-black">
+        <CardHeader className="p-8 border-b border-zinc-800">
+          <div className="flex items-center justify-between mb-4">
+            <Button 
+              onClick={onCancel ? onCancel : () => router.push(`/workspaces/${initialValues.$id}`)}
+              className="gap-x-2 bg-zinc-800 text-white hover:bg-orange-500 transition-all duration-300"
+            >
+              <ArrowLeftIcon className="w-4 h-4" />
+              Back
+            </Button>
+          </div>
+          <CardTitle className="text-3xl font-bold text-white">
+            {initialValues.name}
+          </CardTitle>
+          <CardDescription className="text-zinc-400 mt-2">
+            Update the details for your workspace below.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-8">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white">Workspace Name</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field}
+                        placeholder="Enter workspace name"
+                        className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500"
                       />
-                      <Button
-                        type="button"
-                        
-                        className="w-fit mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
-                        onClick={() => inputRef.current?.click()}
-                        disabled={isPending}
-                      >
-                        Choose a file
-                      </Button>
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-x-5">
+                      {field.value ? (
+                        <div className="relative w-20 h-20 rounded-lg overflow-hidden">
+                          <Image 
+                            src={field.value instanceof File ? URL.createObjectURL(field.value) : field.value}
+                            alt="Workspace Image"
+                            layout="fill"
+                            objectFit="cover"
+                            className="rounded-lg"
+                          />
+                        </div>
+                      ) : (
+                        <Avatar className="w-20 h-20 rounded-lg">
+                          <AvatarFallback className="bg-zinc-800 border border-zinc-700 rounded-lg">
+                            <ImageIcon className="w-10 h-10 text-zinc-400" />
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      <div>
+                        <p className="text-white text-lg font-medium">Workspace Icon</p>
+                        <p className="text-zinc-400 text-xs">Maximum file size: 2 MB</p>
+                        <p className="text-zinc-400 text-xs">Supported formats: PNG, JPG, SVG, JPEG</p>
+                        <input 
+                          className="hidden"
+                          type="file"
+                          accept=".png, .jpg, .svg, .jpeg"
+                          ref={inputRef}
+                          disabled={isPending}
+                          onChange={handleImageChange}
+                          
+                        />
+                        {field.value ? (
+                          <Button
+                            type="button"
+                            className="mt-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300"
+                            onClick={() => {
+                              field.onChange(null);
+                              if (inputRef.current) {
+                                inputRef.current.value = "";
+                              }
+                            }}
+                            disabled={isPending}
+                          >
+                            Remove file
+                          </Button>
+                        ) : (
+                          <Button
+                            type="button"
+                            className="mt-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300"
+                            onClick={() => inputRef.current?.click()}
+                            disabled={isPending}
+                          >
+                            Choose file
+                          </Button>
+                        )}
+                      </div>
                     </div>
-
                   </div>
-                </div>
-
-              )}
-            />
-            <div className="pt-6 space-y-4">
-              <Button type="submit" disabled={isPending} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
-                Create Workspace
-              </Button>
-              <Button onClick={onCancel} disabled={isPending} className={cn("w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out", !onCancel  && "hidden")}>
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+                )}
+              />
+              <div className="pt-6 space-y-4">
+                <Button 
+                  type="submit" 
+                  disabled={isPending} 
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-md transition-all duration-300 transform hover:scale-105"
+                >
+                  Update Workspace
+                </Button>
+                {onCancel && (
+                  <Button 
+                    onClick={onCancel} 
+                    disabled={isPending} 
+                    className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-3 px-4 rounded-md transition-all duration-300"
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <div className="border-t border-zinc-800 my-6"></div>
+      <Card className="border-none rounded-xl shadow-2xl bg-gradient-to-br from-red-900 to-black">
+        <CardContent className="p-8">
+          <div>
+            <h3 className="text-white text-xl font-semibold mb-2">Danger Zone</h3>
+            <p className="text-zinc-400 text-sm mb-4">Once you delete your workspace, there is no going back. Please be certain.</p>
+          </div>
+          <Button 
+            onClick={handleDelete} 
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-md transition-all duration-300 transform hover:scale-105"
+          >
+            Delete Workspace
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
   );
 };

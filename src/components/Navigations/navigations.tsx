@@ -13,7 +13,7 @@ import {
 const routes = [
   {
     label: "Home",
-    href: "/",
+    href: "",
     icon: GoHome,
     activeIcon: GoHomeFill,
   },
@@ -51,12 +51,20 @@ export const Navigation = () => {
             <div
               className={cn(
                 "flex items-center gap-2.5 p-2.5 rounded-md font-medium transition-all duration-300 ease-in-out",
-                "hover:bg-white/10 hover:text-green-400 group",
-                isActive ? "text-black bg-white" : "text-black"
+                "hover:bg-white/10 group",
+                isActive 
+                  ? "text-orange-500 bg-white/10" 
+                  : "text-white hover:text-orange-500"
               )}
             >
-              <Icon className="w-5 h-5 text-white group-hover:text-green-400" />
-              <span className="text-white group-hover:text-green-400 group-hover:-translate-y-0.5 transition-transform duration-300">
+              <Icon className={cn(
+                "w-5 h-5",
+                isActive ? "text-orange-500" : "text-white group-hover:text-orange-500"
+              )} />
+              <span className={cn(
+                "group-hover:-translate-y-0.5 transition-transform duration-300",
+                isActive ? "text-orange-500" : "text-white group-hover:text-orange-500"
+              )}>
                 {route.label}
               </span>
             </div>

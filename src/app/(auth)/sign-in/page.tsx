@@ -6,7 +6,7 @@ import React from 'react'
 const SignInPage = async () => {
   const user = await getCurrent();
   if(user !== null) {
-    redirect('/dashboard')
+    redirect('/')
   }
   return (
     <SignIn/>

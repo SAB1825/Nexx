@@ -13,14 +13,14 @@ export const ResponsiveModal = ({children, open, onOpenChange} : ResponsiveModal
     if(isDesktop) {
         return (
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="w-full sm:max-w-lg p-0 border-none bg-black overflow-y-auto hide-scrollbar max-h-[85vh]">{children}</DialogContent>
+                <DialogContent className="w-full sm:max-w-lg p-0 border-none bg-transparent overflow-y-auto hide-scrollbar max-h-[85vh]">{children}</DialogContent>
             </Dialog>
         )
     }
     return (
         <Drawer open={open} onOpenChange={onOpenChange} >
             <DrawerContent>
-                <div className="overflow-y-auto hide-scrollbar max-h-[85vh] bg-black">
+                <div className="overflow-y-auto hide-scrollbar max-h-[85vh] bg-transparent">
                     {children}
                 </div>
             </DrawerContent>
