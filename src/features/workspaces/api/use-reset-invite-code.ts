@@ -4,11 +4,11 @@ import { InferRequestType, InferResponseType } from "hono";
 import { toast } from "sonner";
 import { UseMutationResult } from "@tanstack/react-query";
 
-type ResponseType = InferResponseType<typeof client.api.workspaces[":workspaceId"]["$delete"], 200>;
-type RequestType = InferRequestType<typeof client.api.workspaces[":workspaceId"]["$delete"]>
+type ResponseType = InferResponseType<typeof client.api.workspaces[":workspaceId"]["reset-invite-code"]["$post"], 200>;
+type RequestType = InferRequestType<typeof client.api.workspaces[":workspaceId"]["reset-invite-code"]["$post"]>
 
 
-export const useDeleteWorkspace = (): UseMutationResult<ResponseType, Error, RequestType> => {
+export const useResetInviteCode = (): UseMutationResult<ResponseType, Error, RequestType> => {
     const queryClient = useQueryClient();
     const mutation = useMutation<
         ResponseType,
@@ -16,19 +16,19 @@ export const useDeleteWorkspace = (): UseMutationResult<ResponseType, Error, Req
         RequestType
     >({
         mutationFn: async ({param}) => {
-            const response = await client.api.workspaces[":workspaceId"]["$delete"]({ param });
+            const response = await client.api.workspaces[":workspaceId"]["reset-invite-code"]["$post"]({ param });
             if(!response.ok) {
-                throw new Error("Failed to delete Workspace")
+                throw new Error("Failed to reset invite code")
             }
             return await response.json()
         },
         onSuccess: ({data}) => {
-            toast.success("Workspace deleted successfully")
+            toast.success("Reset invite code successfully")
             queryClient.invalidateQueries({queryKey: ["workspaces"]})
             queryClient.invalidateQueries({queryKey: ["workspace", data.$id]})
         },
         onError: () => {
-            toast.error("Failed to delete workspace")
+            toast.error("Failed to reset invite code")
             
         }
     })
