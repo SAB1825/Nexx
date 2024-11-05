@@ -7,7 +7,6 @@ import { Workspace } from "./types"
 import { createSessionClient } from "@/lib/appwrite"
 
 export const getWorkspace = async () => {
-    try {
         const {database, account} = await createSessionClient();
         const user = await account.get();
         const members = await database.listDocuments(DATABASE_ID, MEMBERS_ID, [Query.equal("userId", user.$id)])
@@ -19,18 +18,14 @@ export const getWorkspace = async () => {
             Query.orderDesc("$createdAt"),
             Query.equal("$id",workspaceId)])
         return workspaces
-    } catch (error) {
-        console.log(error)
-        return { documents: [], total: 0 }
-
-    }
+      
 }
 
 interface getWorkspaceProps {
     workspaceId: string;
 }
 export const getWorkspaces = async ({workspaceId }: getWorkspaceProps) => {
-    try {
+    
         const {database, account} = await createSessionClient();
 
         const user = await account.get();
@@ -40,32 +35,23 @@ export const getWorkspaces = async ({workspaceId }: getWorkspaceProps) => {
             workspaceId
         })
         if(!member) {
-            return null
+            throw new Error("Member not found")
         }
-        // Directly fetch the workspace document using the workspaceId
         const workspace = await database.getDocument<Workspace>(DATABASE_ID, WORKSPACE_ID, workspaceId)
         return workspace
-    } catch (error) {
-        console.log(error)
-        return null
-    }
+      
 }
 interface getWorkspaceInfoProps {
     workspaceId: string;
 }
-export const getWorkspaceInfo = async ({workspaceId }: getWorkspaceProps) => {
-    try {
+export const getWorkspaceInfo = async ({workspaceId }: getWorkspaceInfoProps) => {
         const {database, account} = await createSessionClient();
 
         const user = await account.get();
         
-        // Directly fetch the workspace document using the workspaceId
         const workspace = await database.getDocument<Workspace>(DATABASE_ID, WORKSPACE_ID, workspaceId)
         return {
             name: workspace.name,
         }
-    } catch (error) {
-        console.log(error)
-        return null
-    }
+    
 }

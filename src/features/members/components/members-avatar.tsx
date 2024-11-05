@@ -9,7 +9,7 @@ interface MembersAvatarProps {
 
 export const MembersAvatar = ({ name, className, fallbackClassName}: MembersAvatarProps) => {
     return (
-        <Avatar className="rounded-md">
+        <Avatar className={cn("rounded-md", className)}>
             <AvatarFallback className={cn("bg-blue-600", fallbackClassName)}>
                 {name.charAt(0).toUpperCase()}   
             </AvatarFallback>

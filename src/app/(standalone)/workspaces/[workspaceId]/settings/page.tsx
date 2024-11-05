@@ -17,9 +17,7 @@ const workspaceIdSettingsPage = async({ params }: WorkspaceIdSettingsPageProps) 
         workspaceId: params.workspaceId
     })
     console.log(initialValues);
-    if(!initialValues) {
-        redirect(`/workspaces/${params.workspaceId}`)
-    }
+    
 
     return (
     <div className="mt-10">

@@ -9,6 +9,7 @@ const config: Config = {
 	"./src/features/**/*.{js,ts,jsx,tsx,mdx}",
 	"./src/components/Navigations/**/*.{js,ts,jsx,tsx,mdx}",
 	"./src/hooks/**/*.{js,ts,jsx,tsx,mdx}",
+	"./src/features/projects/components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
   	extend: {

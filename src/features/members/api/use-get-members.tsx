@@ -15,10 +15,10 @@ export const useGetMembers = ({workspaceId}: UseGetMembersProps) => {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const { data } = await response.json();
-                return { data };
+                return data; 
             } catch (error) {
                 console.error("Error fetching members:", error);
-                return null;
+                throw error; 
             }
         },
         retry: false, 

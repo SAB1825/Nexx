@@ -7,7 +7,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useLogout } from "../api/use-logout"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import LoadingScreen from "@/components/global/Loading"
 
 export const UserButton = () => {
   const { mutate } = useLogout()
@@ -39,9 +38,7 @@ export const UserButton = () => {
   const avatarFallback = name ? name.charAt(0).toUpperCase() : email.charAt(0).toUpperCase()
 
   return (
-    isLoggingOut ? (
-      <LoadingScreen />
-    ) : (
+    
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger className="outline-none relative group ">
           <Avatar className="bg-zinc-900 cursor-pointer w-10 h-10 transition-transform duration-500 transform group-hover:scale-110 group-hover:ring-4 group-hover:ring-primary/50 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.7)]">
@@ -78,6 +75,6 @@ export const UserButton = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    )
+    
   )
 }

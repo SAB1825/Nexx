@@ -16,7 +16,7 @@ export const MobileSidebar = () => {
     return (
         <Sheet modal={false} open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-                <Button size="icon" variant="ghost" className="text-white hover:text-black hover:bg-white lg:hidden">
+                <Button size="icon" variant="ghost" className="text-white hover:text-black hover:bg-white lg:hidden" asChild>
                     <MenuIcon className="size-6 text-white hover:text-black hover:bg-white" />
                 </Button>
             </SheetTrigger>

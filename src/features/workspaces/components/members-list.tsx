@@ -63,14 +63,14 @@ export default function MembersList() {
         <CardTitle className="text-3xl font-bold text-white">Members List</CardTitle>
       </CardHeader>
       <CardContent className="p-8">
-        {data?.data.documents.map((member, index) => (
+        {data?.documents.map((member, index) => (
           <div key={index} className="py-4 border-b border-zinc-800 last:border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <MembersAvatar className="size-12 rounded-lg" fallbackClassName="bg-orange-500" name={member.name} />
                 <div>
                   <p className="font-medium text-white text-lg">{member.name}</p>
-                  <p className="text-sm text-zinc-400">{member.email}</p>
+                  <p className="text-sm text-zinc-400">{member.email}</p>j
                 </div>
               </div>
               <div className="flex items-center space-x-4">
